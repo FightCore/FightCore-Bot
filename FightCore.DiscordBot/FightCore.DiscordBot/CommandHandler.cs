@@ -42,7 +42,7 @@ public class CommandHandler
         var argumentPosition = 0;
 
         // Determine if the message is a command based on the prefix and make sure no bots trigger commands
-        if (!(message.HasCharPrefix('!', ref argumentPosition) || 
+        if (!(message.HasCharPrefix('-', ref argumentPosition) || 
             message.HasMentionPrefix(_client.CurrentUser, ref argumentPosition)) ||
             message.Author.IsBot)
             return;

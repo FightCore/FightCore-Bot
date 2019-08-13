@@ -20,7 +20,9 @@ namespace FightCore.DiscordBot
 
         public async Task MainAsync()
         {
-            _logger = new SimpleConsoleLogger();
+            _logger = new SerilogLogger();
+            _logger.Initialize();
+            
             _discordClient = new DiscordSocketClient();
             _commandService = new CommandService();
 
@@ -29,13 +31,6 @@ namespace FightCore.DiscordBot
             var commandHandler = new CommandHandler(_discordClient, _commandService);
             await commandHandler.InstallCommandsAsync();
             
-
-            // Remember to keep token private or to read it from an 
-            // external source! In this case, we are reading the token 
-            // from an environment variable. If you do not know how to set-up
-            // environment variables, you may find more information on the 
-            // Internet or by using other methods such as reading from 
-            // a configuration.
             var token = Environment.GetEnvironmentVariable("DiscordToken");
             await _discordClient.LoginAsync(TokenType.Bot, token
                 );

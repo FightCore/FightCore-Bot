@@ -6,5 +6,7 @@ namespace FightCore.DiscordBot.Logging
     public interface ILogger
     {
         Task LogMessage(LogMessage message);
+
+        void Initialize();
     }
 }
