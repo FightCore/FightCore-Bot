@@ -8,6 +8,8 @@ namespace FightCore.DiscordBot.Logging
     public class SerilogLogger : ILogger
     {
         private Serilog.ILogger _logger;
+
+        /// <inheritdoc />
         public Task LogMessage(LogMessage message)
         {
             switch (message.Severity)
@@ -35,6 +37,7 @@ namespace FightCore.DiscordBot.Logging
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc />
         public void Initialize()
         {
             _logger = new LoggerConfiguration()
