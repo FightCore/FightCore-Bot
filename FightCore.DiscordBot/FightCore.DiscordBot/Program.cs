@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using FightCore.DiscordBot.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FightCore.DiscordBot
 {
@@ -29,8 +31,8 @@ namespace FightCore.DiscordBot
             _discordClient.Log += Log;
             
             var commandHandler = new CommandHandler(_discordClient, _commandService);
-            await commandHandler.InstallCommandsAsync();
-            
+            await commandHandler.InstallCommandsAsync(BuildServiceProvider());
+
             var token = Environment.GetEnvironmentVariable("DiscordToken");
             await _discordClient.LoginAsync(TokenType.Bot, token
                 );
@@ -39,6 +41,13 @@ namespace FightCore.DiscordBot
             // Block this task until the program is closed.
             await Task.Delay(-1);
         }
+
+        public IServiceProvider BuildServiceProvider() => new ServiceCollection()
+            .AddSingleton(_discordClient)
+            .AddSingleton(_commandService)
+            .AddSingleton(_logger)
+            .BuildServiceProvider();
+
 
         private static Task Log(LogMessage message)
         {

@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord.Commands;
@@ -9,6 +10,7 @@ public class CommandHandler
 {
     private readonly DiscordSocketClient _client;
     private readonly CommandService _commands;
+    private IServiceProvider _serviceProvider;
 
     public CommandHandler(DiscordSocketClient client, CommandService commands)
     {
@@ -16,8 +18,10 @@ public class CommandHandler
         _client = client;
     }
     
-    public async Task InstallCommandsAsync()
+    public async Task InstallCommandsAsync(IServiceProvider serviceProvider)
     {
+        _serviceProvider = serviceProvider;
+        
         // Hook the MessageReceived event into our command handler
         _client.MessageReceived += HandleCommandAsync;
 
@@ -30,7 +34,7 @@ public class CommandHandler
         // If you do not use Dependency Injection, pass null.
         // See Dependency Injection guide for more information.
         await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(), 
-                                        services: null);
+                                        services: serviceProvider);
     }
 
     private async Task HandleCommandAsync(SocketMessage messageParam)
@@ -58,7 +62,7 @@ public class CommandHandler
         var result = await _commands.ExecuteAsync(
             context: context, 
             argPos: argumentPosition,
-            services: null);
+            services: _serviceProvider);
 
         // Optionally, we may inform the user if the command fails
         // to be executed; however, this may not always be desired,
